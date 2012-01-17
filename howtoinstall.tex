@@ -1,0 +1,168 @@
+\documentclass{jsarticle}
+\usepackage{listings}
+\pagestyle{empty}
+\title{How to Install Mikutter?}
+\author{@katsyoshi}
+\date{}
+\begin{document}
+\maketitle
+ \section{はじめに}
+ この文書では，mikutter\cite{mikutter}をインストールし実行する方法につい
+ て書いてあります．ここでは，Linux(\ref{linux}), FreeBSD(\ref{freebsd}),
+ Mac(\ref{mac})におけるインストール方法について述べます．
+ 
+ \section{インストール} \label{install}
+ インストール方法についてある程度まで実行できるようにします．
+  \subsection{必須アプリケーション}
+  mikutterを動かすためには，以下のアプリケーションが必要となります\cite{readme}．
+  \begin{itemize}
+   \item ruby-1.9.2 以上
+   \item x11
+   \item gtk2
+   \item Open SSL
+   \item Subversion
+  \end{itemize}
+  これらのアプリケーションはmikutterをインストールする前にインストールし
+  ます．mikutterを動かすために必要ではないが，subversionをあげておく．こ
+  の文書でmikutterは，基本的にtrunk版を推奨する．
+
+  Rubyはパッケージからでもインストールできますが，提供されてるRuby
+  のパッケージが1.8系となっているディストリビューションも多いので，ここ
+  では，RVM(Ruby Version Manager)について\ref{RVM}で述べます．
+  
+  \subsubsection{RVM:Ruby Version Manager} \label{RVM}
+  mikutterをインストールする前にRubyの実行環境をRVM(Ruby Version
+  Manager)\cite{rvm}を用いて構築します．
+  Linuxの一部ディストリビューション，FreeBSDでは必要ありませんが，ここで
+  は，一応説明します．
+  RVMの公式サイトを参考にRVMをインストールし，Rubyの最新版をインストール
+  します．
+  \begin{lstlisting}
+   $ bash -s stable < <(curl -s \
+   https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+   $ rvm install 1.9.3 --default
+  \end{lstlisting}
+  RVMをインストールするには，curl, gccなどが必要になりますのでRVM
+  の公式サイトを参考にインストールしてください．
+  
+  \subsection{Linux} \label{linux}
+  まず，Linuxでのインストール方法について説明します．Linuxでは，Ubuntu
+  Linux(\ref{ubuntu})とGentoo Linux(\ref{gentoo})について説明します．
+
+   \subsubsection{Ubuntu Linux} \label{ubuntu}
+   Ubuntuでは，READMEの通りにいけますが，ここでは，RVMを用いてインストー
+   ルします．そのまえにまず，必要なアプリケーションをインストールします．
+    \begin{lstlisting}
+     $ sudo apt-get update
+     $ sudo apt-get upgrade
+     $ sudo apt-get build-dep ruby
+     $ sudo apt-get install libgtk2.0-dev
+    \end{lstlisting}
+    必要なアプリケーションをインストールする前にOSを最新の状態にします．
+    つぎに，Rubyをビルドするために必要なアプリケーションをインストールし
+    ます．そして，libgtk2.0-devをインストールします．これは，gemから
+    ruby-gtk2をインストールするために必要です．
+
+    RVMをインストールしてください(\ref{RVM})．RVMをインストー
+    ル，ruby-1.9.3のインストールが完了したら，つぎにgemから必要なライブ
+    ラリをインストールします．
+    \begin{lstlisting}
+     $ gem install gtk2
+    \end{lstlisting}
+    これで必要なものがインストールできました．
+
+   \subsubsection{Gentoo Linux} \label{gentoo}
+   Gentooでは，すでにパッケージが用意されてますので，コマンドを入力する
+   とインストールできます．
+   \begin{lstlisting}
+    $ emerge mikutter
+   \end{lstlisting}
+   でインストール終了です．
+  \subsection{FreeBSD} \label{freebsd}
+  FreeBSDもGentoo(\ref{gentoo})と同様にportsが提供されていますので，簡単に
+  インストールできます．
+  \begin{lstlisting}
+   $ cd /usr/ports/net-im/mikutter
+   # make install
+  \end{lstlisting}
+  でインストール終了です．
+  \subsection{Mac} \label{mac}
+  Macでは，MacportsかHomebrewを用いて必要なライブラリをインストールしま
+  す．ここでは，HomebrewとRVMを用いた方法について述べます．
+
+  まず，Homebrewから必要なライブラリをインストールします．
+  \begin{lstlisting}
+   $ brew install gtk subversion
+   $ gem install gtk2
+  \end{lstlisting}
+  準備はこれで終わりですが，日本語入力用にMacUIMをインストールする必要\ref{uim}が
+  あります．
+
+  \subsubsection{MacUIM} \label{uim}
+  MacUIM\cite{macuim}は，MacのX11で日本語入力するためのアプリケーションです．
+  MacUIMのインストールは，公式サイトから最新版のdmgをダウンロードします．
+
+  公式サイトからダウンロードし，インストールが完了すると，つぎにMacUIMの
+  設定を行ないます．MacUIMをX11でも使えるよう\cite{rubyneco}にまず，X11の
+  /usr/X11/lib/X11/xinit/xinitrcを\~/.xinitrcへコピーします．
+  コピーしたら，つぎの一行を追加します．
+  \begin{lstlisting}
+   /Library/Frameworks/UIM.framework/Versions/Current/bin/uim-xim &
+  \end{lstlisting}
+  これは，uimをバックグラウンドで起動します．つぎに，.MacOSディレクトリ
+  を作成し，以下の内容でenvironment.plistを作成します．
+  \begin{lstlisting}
+   <?xml version="1.0" encoding="UTF-8"?>
+   <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+   <plist version="1.0">
+   <dict>
+   <key>LANG</key>
+   <string>ja_JP.UTF-8</string>
+   <key>GTK_IM_MODULE</key>
+   <string>uim</string>
+   <key>XMODIFIERS</key>
+   <string>@im=uim</string>
+   </dict>
+   </plist>
+  \end{lstlisting}
+  最後にX11起動時にUIMが起動するように
+  /usr/X11/lib/X11/xinit/xinitrc.d/20-uim.shを作成します．
+  \begin{lstlisting}
+   IM=/Library/Frameworks/UIM.framework/Versions/Current/bin/uim-xim
+   [ -x $IM ] && $IM &
+  \end{lstlisting}
+  これでMacでの日本語入力が可能となります．
+  
+  \subsection{mikutterのダウンロード} \label{download}
+  Gentoo LinuxやFreeBSDを利用していない場合は，以下のSVNを用いて最新版
+  (開発版)をダウンロードします．
+  \begin{lstlisting}
+   $ svn clone svn://toshia.dip.jp/mikutter/trunc mikutter
+  \end{lstlisting}
+ \section{実行} \label{execute}
+ 実行は，インストールした方法により変わってきます．Gentoo LinuxやFreeBSD
+ では，コマンドラインにmikutterと入力するだけで実行できます．RVMを用いた
+ 場合では，
+ \begin{lstlisting}
+  $ cd mikutter
+  $ ruby mikutter.rb
+ \end{lstlisting}
+ と入力することで実行することができます．
+ \section{まとめ}
+ mikutterのインストール方法について，簡単ですが述べてきました．mikutter
+ を動作させるために，rubyなどの必要なアプリケーションのインストール，RVM
+ を用いたRubyのインストールについて説明をし，OSごとのインストール方法に
+ ついて書きました．
+ 
+ つたない説明で分かりずらいと思ますので，Twitterで@katsyoshiにリプライを
+ 投げてくださると反応すると思います．
+
+ \begin{thebibliography}{}
+  \bibitem{mikutter} mikutter: http://mikutter.hachune.net
+  \bibitem{readme} README: https://github.com/katsyoshi/mikutter
+  \bibitem{rvm} RVM: http://beginrescueend.com/
+  \bibitem{macuim} MacUIM: http://code.google.com/p/macuim/
+  \bibitem{rubyneco} 猫にルビー X11上の日本語入力環境を構築する: http://catruby.blog83.fc2.com/blog-entry-10.html
+ \end{thebibliography}
+\end{document}
